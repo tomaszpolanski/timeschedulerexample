@@ -5,6 +5,9 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.disposables.Disposables
 import java.util.concurrent.TimeUnit
 
+/**
+ * Scheduler that instantly executes the task.
+ */
 object InstantScheduler : Scheduler() {
     override fun createWorker(): Worker =
         object : Worker() {
