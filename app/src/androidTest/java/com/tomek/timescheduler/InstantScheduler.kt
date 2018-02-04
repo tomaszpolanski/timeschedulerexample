@@ -19,7 +19,5 @@ object InstantScheduler : Scheduler() {
                 run.run()
                 return Disposables.empty()
             }
-
         }
-
 }
