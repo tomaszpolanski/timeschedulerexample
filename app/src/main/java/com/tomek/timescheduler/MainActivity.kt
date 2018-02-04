@@ -14,7 +14,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
-const val FAB_DELAY = "FAB_DELAY"
+const val FAB_DELAY_TAG = "FAB_DELAY_TAG"
+const val FAB_DELAY = 5L
 const val MESSAGE = "Hi there!"
 
 
@@ -30,25 +31,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val clickStream: Observable<View> =
-        Observable.create { emitter ->
+        Observable.create<View> { emitter ->
             val fab = findViewById<View>(R.id.fab) as FloatingActionButton
             fab.setOnClickListener {
                 emitter.onNext(fab)
             }
             emitter.setCancellable { fab.setOnClickListener(null) }
         }
+            .subscribeOn(AndroidSchedulers.mainThread())
 
     override fun onResume() {
         super.onResume()
-        disposable = clickStream.debounce(5, TimeUnit.SECONDS, TimeScheduler.time(FAB_DELAY))
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                           Snackbar.make(it, MESSAGE, Snackbar.LENGTH_LONG)
-                               .show()
-                       }) { error ->
-                Log.wtf("MainActivity", error)
-            }
+        disposable =
+                clickStream.debounce(FAB_DELAY, TimeUnit.SECONDS, TimeScheduler.time(FAB_DELAY_TAG))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({ view ->
+                                   Snackbar.make(view, MESSAGE, Snackbar.LENGTH_SHORT)
+                                       .show()
+                               }) { error ->
+                        Log.wtf("MainActivity", error)
+                    }
     }
 
     override fun onPause() {

@@ -1,8 +1,10 @@
 package com.tomek.timescheduler
 
 import io.reactivex.Scheduler
-import io.reactivex.functions.BiFunction
+import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.Disposables
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /*
  * Copyright 2016 Futurice GmbH
@@ -20,6 +22,9 @@ import io.reactivex.schedulers.Schedulers
  * limitations under the License.
  */
 
+
+typealias TimeHandler = (defaultScheduler: Scheduler, tag: String) -> Scheduler
+
 /**
  * Scheduler used for time based operations.
  *
@@ -30,7 +35,10 @@ import io.reactivex.schedulers.Schedulers
  */
 object TimeScheduler {
 
-    @Volatile private var onTimeHandler: BiFunction<Scheduler, String, Scheduler>? = null
+    /**
+     * Handler for time scheduler.
+     */
+    @Volatile var timeSchedulerHandler: TimeHandler? = null
 
     /**
      * Returns scheduler for time operations.
@@ -38,23 +46,14 @@ object TimeScheduler {
      * @param tag Tag to be used in tests to mock the scheduler
      */
     fun time(tag: String): Scheduler {
-        val f = onTimeHandler ?: return Schedulers.computation()
-        return f.apply(Schedulers.computation(), tag)
-    }
-
-    /**
-     * Sets handler for time scheduler.
-     *
-     * @param handler Handler to be used
-     */
-    fun setTimeSchedulerHandler(handler: BiFunction<Scheduler, String, Scheduler>?) {
-        onTimeHandler = handler
+        val handler = timeSchedulerHandler ?: return Schedulers.computation()
+        return handler(Schedulers.computation(), tag)
     }
 
     /**
      * Resets current scheduler handler.
      */
     fun reset() {
-        onTimeHandler = null
+        timeSchedulerHandler = null
     }
 }
