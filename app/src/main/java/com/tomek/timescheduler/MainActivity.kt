@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         Observable.create<View> { emitter ->
             val fab = findViewById<View>(R.id.fab) as FloatingActionButton
             fab.setOnClickListener {
+                Toast.makeText(this, "Tap!", Toast.LENGTH_SHORT).show()
                 emitter.onNext(fab)
             }
             emitter.setCancellable { fab.setOnClickListener(null) }

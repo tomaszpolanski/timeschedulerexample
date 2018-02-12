@@ -37,8 +37,8 @@ class MainActivityTest {
         Espresso.onView(withId(R.id.fab))
                 .perform(click())
 
-        Espresso.onView(withText(MESSAGE))
-                .check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.snackbar_text))
+                .check(matches(withText(MESSAGE)))
     }
 
     @Test
