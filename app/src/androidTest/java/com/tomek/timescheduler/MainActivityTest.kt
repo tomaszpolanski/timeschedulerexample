@@ -2,15 +2,11 @@ package com.tomek.timescheduler
 
 import android.app.Activity
 import android.support.test.espresso.Espresso
-import android.support.test.espresso.NoMatchingViewException
-import android.support.test.espresso.ViewAssertion
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.rule.ActivityTestRule
-import android.view.View
-import com.google.common.truth.Truth.assertThat
 import io.reactivex.schedulers.TestScheduler
 import org.junit.After
 import org.junit.Rule
@@ -20,7 +16,7 @@ import java.util.concurrent.TimeUnit
 class MainActivityTest {
 
     private inline fun <reified T : Activity> create() =
-        ActivityTestRule(T::class.java, false, false)
+            ActivityTestRule(T::class.java, false, false)
 
     @Rule
     @JvmField
@@ -39,10 +35,10 @@ class MainActivityTest {
 
         rule.launchActivity(null)
         Espresso.onView(withId(R.id.fab))
-            .perform(click())
+                .perform(click())
 
         Espresso.onView(withText(MESSAGE))
-            .check(matches(isDisplayed()))
+                .check(matches(isDisplayed()))
     }
 
     @Test
@@ -54,12 +50,12 @@ class MainActivityTest {
 
         rule.launchActivity(null)
         Espresso.onView(withId(R.id.fab))
-            .perform(click())
+                .perform(click())
 
         scheduler.advanceTimeBy(FAB_DELAY - 1, TimeUnit.SECONDS)
 
         Espresso.onView(withId(R.id.snackbar_text))
-            .check(doesNotExist())
+                .check(doesNotExist())
     }
 
     @Test
@@ -71,15 +67,11 @@ class MainActivityTest {
 
         rule.launchActivity(null)
         Espresso.onView(withId(R.id.fab))
-            .perform(click())
+                .perform(click())
         scheduler.advanceTimeTo(FAB_DELAY, TimeUnit.SECONDS)
 
         Espresso.onView(withId(R.id.snackbar_text))
-            .check(Exists)
+                .check(matches(withText(MESSAGE)))
     }
 
-    object Exists : ViewAssertion {
-        override fun check(view: View?, noViewFoundException: NoMatchingViewException?) =
-            assertThat(view).isNotNull()
-    }
 }

@@ -14,8 +14,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
+typealias Second = Long
+
 const val FAB_DELAY_TAG = "FAB_DELAY_TAG"
-const val FAB_DELAY = 5L
+const val FAB_DELAY: Second = 3L
 const val MESSAGE = "Hi there!"
 
 
